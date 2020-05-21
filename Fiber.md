@@ -12,7 +12,7 @@
 
 ### requestAnimationFrame(callback)
 - Q：浏览器刷新频率怎么和屏幕的刷新频率同步？
-- A：vSync标记符 显卡会在每一帧开始时间给浏览器发送vsync标识符
+- A：vSync标记符，显卡会在每一帧开始时间给浏览器发送vsync标识符
 
 ### requestIdleCallback
 - 目前只要Chrome支持，fiber的基础，内部是自己实现requestIdleCallback方法
@@ -114,7 +114,8 @@ walk(root);
 - 缺点：这种遍历是递归调用，执行栈会越来越深，而且不能中断，因为中断难以恢复；例如超过一千层的子节点中断有得回来重新遍历。
 #### - Now
 - Fiber定义：是一个执行单元每次执行完一个执行单元（一个节点），React就会检查还剩多少时间，如果没有时间就将控制权让出。
-- fiber，通过调度策略合理分配CPU资源，从而提高用户响应速度；通过fiber Reconcilation过程可以变的可以被中断，适当的让出了CPU执行权，浏览器及时的响应用户交互
+- fiber解决执行栈不能中断的问题，通过调度策略合理分配CPU资源，从而提高用户响应速度；通过fiber Reconcilation过程可以变的可以被中断，适当的让出了CPU执行权，浏览器及时的响应用户交互
+- requestIdleCallback作用：申请时间片，请求一个回调给浏览器，浏览器会在组件空闲的时候执行Callback任务
 - ![Image](./images/05.png)
 - Fiber是一种数据结构：React使用链表，每个vnode节点内部表示一个Fiber
 ```
@@ -147,5 +148,53 @@ module.export = A1;
 - 遍历fiber树：深度优先——先儿子 后弟弟 再叔叔
 - ![Image](./images/07.png)
 ```
+let rootFiber = require('./Element');
 
+let nextUnitOfWork = null;
+function workLoop(deadline) {
+  // while (nextUnitOfWork) { // 如果有待执行单元，执行并返回下一个执行单元
+  while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && nextUnitOfWork) // Q：为什么用while？
+    nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+  }
+  if (!nextUnitOfWork) { 
+    console.log('render阶段遍历结束') 
+  } else {
+    // 如果睡眠或是执行大于16.66ms此时执行下一个浏览器调度任务，请求下次浏览器空闲时候调用
+    requestIdleCallback(workLoop, { timeout: 1000 })
+  }
+}
+function performUnitOfWork(fiber) {
+  beginWork(fiber);
+  if (fiber.child) { // 如果有儿子返回大儿子
+    return fiber.child;
+  }
+  // 如果没有儿子说明此fiber已经完成了
+  while (fiber) {
+    completeUnitOfWork(fiber);
+    if (fiber.sibling) { // 有弟弟返回弟弟
+      return fiber.sibling;
+    }
+    fiber = fiber.return; // C2没有下兄弟返回父亲B1，这时fiber即B1（找父级），B1的弟弟B2有即C2叔叔返回 fiber.sibling 之后B2看是否有儿子 弟弟 父亲弟弟即叔叔 但一直返回到A1上面没有了 此时为null结束
+  }
+}
+
+function beginWork(fiber) { // A1 B1 C1 C2 B2
+  console.log('开始', fiber.key);
+}
+
+function completeUnitOfWork(fiber) { // C1 C2 B1 B2 A1
+  console.log('结束', fiber.key);
+}
+
+nextUnitOfWork = rootFiber;
+// workLoop(); // 此时与requestIdleCallback联系
+requestIdleCallback(workLoop, { timeout: 1000 });
 ```
+- vnode还是有的，但会被转成fiber
+- Q：render阶段结果是什么？A：effect list副作用但链表
+- 优势在于requestIdleCallback不阻塞主流程，可怜callback机制
+- fiber和generator相似，可中断
+- Q：为什么用while？A：为了性能考虑可以执行多个任务不浪费，如deadline.timeRemaining() > 0条件下
+- Q：为什么用return不用parent？A：它但解释是要返回父级节点并不是指父级，是一种指向。
+- vue和react优化方向不一样，vue预判对比，没有fiber概念，vue基于模版和watch组件级更新范围小，把每个更新任务分割的足够小；react时间切片，任务还剩很大，但是分割成多个小任务，可以中断和恢复，不阻塞主进程执行高优先级任务，调setState都是从根节点更新。
+- Q：会不会存在没有空闲时间执行不完怎么办？A：不会，workLoop至少会执行一个任务，如果这个任务没有时间片了就放弃，就去执行下个空闲时间片（下次浏览器空闲调度），但还会继续执行上个未完成但任务，所以说fiber可中断。
