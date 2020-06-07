@@ -58,3 +58,5 @@ export function createFactory(type) {
 }
 ```
 - isValidElement验证是否是一个ReactElement
+
+- 非常相近的两次更新得到相同的expirationTime，然后在一次更新中完成，相当于一个自动的batchedUpdates。

@@ -8,7 +8,7 @@
 - 每个帧的开头包括样式计算、布局和绘制
 - Js执行js引擎和页面渲染引擎在同一个渲染线程，GUI渲染和JS引擎两者是互斥
 - 如果某个任务执行时间过长，浏览器会推迟渲染
-- ![Image](./images/01.png)
+- <img src="./images/01.png" width="800" />
 
 ### requestAnimationFrame(callback)
 - Q：浏览器刷新频率怎么和屏幕的刷新频率同步？
@@ -26,7 +26,7 @@
 - 是一种链式存取的数据结构
 - 链表中的数据是以节点来表示的，每个节点的构成：元素+指针（指示后继元素存储数据位置），元素就是存储数据的存储单元，指针就是链家每个节点的地址
 - 在fiber中，很多地方用链表，在fiber是一个虚拟DOM节点是一个单元
-- ![Image](./images/02.png)
+- <img src="./images/02.png" width="700" />
 - 以上图含有4个节点，每个节点两部分组成，payload表示数据，nextUpdate表示指针，firstUpdate（头指针指向头节点）和lastUpdate（尾指针指向最后一个节点），尾节点没有下指针。
 ```
 class Update {
@@ -72,7 +72,7 @@ queue.enqueueUpdate(new Update((state) => ({ number: state.number + 1 })); // �
 queue.forceUpdate();
 ```
 - { number: 0 } setState({ number: 1 }) setState((state) => ({ number: state.number + 1 })) 每个setState都是一个Update节点，通过链表连接起来，最后在某个时间点进行合并计算新状态。例如上面，第一个{ name: 'xiao ming' }第二个{ number: 0 }第三、四个传的是函数，最终结果{ name: 'xiao ming', number: 2 }
-- ![Image](./images/03.png)
+- <img src="./images/03.png" width="600" />
 
 - forceUpdate 获取老的状态，然后遍历这个链表进行更新
 - Q：fiber为什么使用链表
@@ -81,7 +81,7 @@ queue.forceUpdate();
 
 ### fiber
 - Q：fiber之前是什么样，为什么是fiber？
-- ![Image](./images/04.png)
+- <img src="./images/04.png" width="200" />
 ```
 const root = {
   key: 'A1',
@@ -116,7 +116,7 @@ walk(root);
 - Fiber定义：是一个执行单元每次执行完一个执行单元（一个节点），React就会检查还剩多少时间，如果没有时间就将控制权让出。
 - fiber解决执行栈不能中断的问题，通过调度策略合理分配CPU资源，从而提高用户响应速度；通过fiber Reconcilation过程可以变的可以被中断，适当的让出了CPU执行权，浏览器及时的响应用户交互
 - requestIdleCallback作用：申请时间片，请求一个回调给浏览器，浏览器会在组件空闲的时候执行Callback任务
-- ![Image](./images/05.png)
+- <img src="./images/05.png" width="500" />
 - Fiber是一种数据结构：React使用链表，每个vnode节点内部表示一个Fiber
 ```
 type Fiber = {
@@ -126,7 +126,7 @@ type Fiber = {
   sibling: Fiber // 指向下一个弟弟
 }
 ```
-- ![Image](./images/06.png)
+- <img src="./images/06.png" width="500" />
 #### - Fiber执行阶段
 - 每次渲染有两次阶段：Reconciliation（协调、render阶段）和Commit（提交阶段）
 - 协调阶段可以理解为Diff阶段，这个阶段可以被中断，这个阶段会找出所有节点变更，例如节点新增、删除、属性变更等，这些变更React称之为副作用（Effect）
@@ -146,7 +146,7 @@ C1.sibling = C2;
 module.export = A1;
 ```
 - 遍历fiber树：深度优先——先儿子 后弟弟 再叔叔
-- ![Image](./images/07.png)
+- <img src="./images/07.png" width="500" />
 ```
 let rootFiber = require('./Element');
 
