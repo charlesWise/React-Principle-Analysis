@@ -116,7 +116,7 @@ walk(root);
 - Fiber定义：是一个执行单元每次执行完一个执行单元（一个节点），React就会检查还剩多少时间，如果没有时间就将控制权让出。
 - fiber解决执行栈不能中断的问题，通过调度策略合理分配CPU资源，从而提高用户响应速度；通过fiber Reconcilation过程可以变的可以被中断，适当的让出了CPU执行权，浏览器及时的响应用户交互
 - requestIdleCallback作用：申请时间片，请求一个回调给浏览器，浏览器会在组件空闲的时候执行Callback任务
-- <img src="./images/05.png" width="500" />
+- <img src="./images/05.png" width="350" />
 - Fiber是一种数据结构：React使用链表，每个vnode节点内部表示一个Fiber
 ```
 type Fiber = {
@@ -126,7 +126,7 @@ type Fiber = {
   sibling: Fiber // 指向下一个弟弟
 }
 ```
-- <img src="./images/06.png" width="500" />
+- <img src="./images/06.png" width="400" />
 #### - Fiber执行阶段
 - 每次渲染有两次阶段：Reconciliation（协调、render阶段）和Commit（提交阶段）
 - 协调阶段可以理解为Diff阶段，这个阶段可以被中断，这个阶段会找出所有节点变更，例如节点新增、删除、属性变更等，这些变更React称之为副作用（Effect）
