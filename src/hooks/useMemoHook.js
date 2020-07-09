@@ -17,7 +17,7 @@ const UseMemoHook = () => {
   const [num, setNum] = useState(8);
 
   useEffect(() => {
-    console.log('useEffect')
+    // console.log('useEffect')
   })
   useMemo(() => {
     console.log('useMemo')

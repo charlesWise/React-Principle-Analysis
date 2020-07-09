@@ -5,6 +5,9 @@ import UseRefHook from './hooks/useRefHook';
 import UseContextHook from './hooks/useContextHook';
 import UseMemoHook from './hooks/useMemoHook';
 import UseCallbackHook from './hooks/useCallbackHook';
+import UseLayoutEffectHook from './hooks/useLayoutEffectHook';
+import ForwardRefuseRef from './hooks/forwardRefuseRef';
+import CustomUseCustomHook from './hooks/custom.useCustomHook';
 
 const App = () => {
   return (
@@ -15,6 +18,9 @@ const App = () => {
       <UseContextHook />
       <UseMemoHook />
       <UseCallbackHook />
+      <UseLayoutEffectHook />
+      <ForwardRefuseRef />
+      <CustomUseCustomHook />
     </div>
   )
 }

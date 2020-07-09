@@ -25,3 +25,7 @@ RN 0.59
 
 **Hooks实现原理**
 + 在上面fiber结构分析可以看出现在的Class component的state和props是记录在fiber上的,在fiber更新后才会更新到component的this.state和props里面，而并不是class component自己调理的过程。这也给了实现hooks的方便，因为hooks是放在function component里面的，他没有自己的this，但我们本身记录state和props就不是放在class component this上面，而是在fiber上面，所以我们有能力记录状态之后，也有能力让function  component更新过程当中拿到更新之后的state。
+
+**封装自定义hook**
++ 和普通的函数本质上没有区别，都是做一些函数的封装，方便使用。
++ 1、必须以use开头；2、自定义的hook可以使用原有的hook来封装。
