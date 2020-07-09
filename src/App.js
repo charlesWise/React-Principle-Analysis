@@ -1,32 +1,36 @@
 import React from 'react';
+import UseStateHook from './hooks/useStateHook';
+import UseEffectHook from './hooks/useEffectHook';
+import UseRefHook from './hooks/useRefHook';
+import UseContextHook from './hooks/useContextHook';
+import UseMemoHook from './hooks/useMemoHook';
+import UseCallbackHook from './hooks/useCallbackHook';
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//       </header>
-//     </div>
-//   );
-// }
-
-class App extends React.Component {
-  componentDidMount() {
-    console.log(this, this._reactInternalFiber)
-  }
-  render () {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-        </header>
-      </div>
-    )
-  }
+const App = () => {
+  return (
+    <div className="App">
+      <UseStateHook />
+      <UseEffectHook />
+      <UseRefHook />
+      <UseContextHook />
+      <UseMemoHook />
+      <UseCallbackHook />
+    </div>
+  )
 }
 
 export default App;
+
+
+// class App extends React.Component {
+//   componentDidMount() {
+//     console.log(this, this._reactInternalFiber)
+//   }
+//   render () {
+//     return (
+//       <div className="App">
+//         <UseStateHook />
+//       </div>
+//     )
+//   }
+// }
